@@ -36,7 +36,7 @@ jobs:
         run: zip release.zip ./* -r
 
       - name: Upload artifact for deployment jobs
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: python-app
           path: |
@@ -50,11 +50,11 @@ jobs:
       name: 'Production'
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
     permissions:
-      id-token: write #This is required for requesting the JWT
+      id-token: write # This is required for requesting the JWT
 
     steps:
       - name: Download artifact from build job
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: python-app
 
@@ -64,9 +64,10 @@ jobs:
       - name: Login to Azure
         uses: azure/login@v1
         with:
-          client-id: ${{ b0cdd093-b37e-4061-8a03-e639e847fe7f }}
-          tenant-id: ${{ b767a72e-40b6-476d-b144-248da07c71b4 }}
-          subscription-id: ${{ c51dacf3-1f09-4e91-b1f6-cee18a167fd1 }}
+          client-id: 'b0cdd093-b37e-4061-8a03-e639e847fe7f'
+          tenant-id: 'b767a72e-40b6-476d-b144-248da07c71b4'
+          subscription-id: 'c51dacf3-1f09-4e91-b1f6-cee18a167fd1'
+          client-secret: '${{ secrets.AZURE_CLIENT_SECRET }}'
 
       - name: 'Deploy to Azure Web App'
         uses: azure/webapps-deploy@v2
@@ -74,5 +75,4 @@ jobs:
         with:
           app-name: 'newapp14'
           slot-name: 'Production'
-          # Replace with your actual deployment parameters
-          # For more details, check the Azure Web Apps Deploy action documentation: https://github.com/Azure/webapps-deploy
+          publish-profile: '${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE }}'
